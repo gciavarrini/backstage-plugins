@@ -336,6 +336,47 @@ describe('OrchestratorClient', () => {
       await expect(promise).rejects.toThrow();
     });
   });
+  describe('listWorkflowOverviewsV2', () => {
+    it('should return workflow overviews when successful', async () => {
+      // Given
+      const mockWorkflowOverviews = [
+        { id: 'workflow123', name: 'Workflow 1' },
+        { id: 'workflow456', name: 'Workflow 2' },
+      ];
+
+      // Mock fetch to simulate a successful response
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: jest.fn().mockResolvedValue(mockWorkflowOverviews),
+      });
+
+      // When
+      const result = await orchestratorClient.listWorkflowOverviewsV2();
+
+      // Then
+      expect(fetch).toHaveBeenCalledWith(`/v2/workflows/overview`, {
+        headers: defaultAuthHeaders,
+      });
+      expect(result).toEqual(mockWorkflowOverviews);
+    });
+
+    it('should throw a ResponseError when listing workflow overviews fails', async () => {
+      // Given
+
+      // Mock fetch to simulate a failed response
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        statusText: 'Internal Server Error',
+      });
+
+      // When
+      const promise = orchestratorClient.listWorkflowOverviewsV2();
+
+      // Then
+      await expect(promise).rejects.toThrow();
+    });
+  });
   describe('listInstances', () => {
     it('should return instances when successful', async () => {
       // Given

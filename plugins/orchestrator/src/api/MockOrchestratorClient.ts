@@ -7,7 +7,9 @@ import {
   WorkflowExecutionResponse,
   WorkflowInputSchemaResponse,
   WorkflowOverview,
+  WorkflowOverviewDTO,
   WorkflowOverviewListResult,
+  WorkflowOverviewListResultDTO,
 } from '@janus-idp/backstage-plugin-orchestrator-common';
 
 import { hasOwnProp, isNonNullable } from '../utils/TypeGuards';
@@ -36,6 +38,12 @@ export interface MockOrchestratorApiData {
   getWorkflowOverviewResponse: ReturnType<
     OrchestratorApi['getWorkflowOverview']
   >;
+  getWorkflowOverviewResponseV2: ReturnType<
+    OrchestratorApi['getWorkflowOverviewV2']
+  >;
+  listWorkflowOverviewsResponseV2:
+    | ReturnType<OrchestratorApi['listWorkflowOverviewsV2']>
+    | undefined;
 }
 
 export class MockOrchestratorClient implements OrchestratorApi {
@@ -166,5 +174,32 @@ export class MockOrchestratorClient implements OrchestratorApi {
     }
 
     return this._mockData.retriggerInstanceInErrorResponse();
+  }
+
+  // v2
+  getWorkflowOverviewV2(
+    _workflowId: string,
+  ): Promise<WorkflowOverviewDTO | undefined> {
+    if (
+      !hasOwnProp(this._mockData, 'getWorkflowOverviewV2Response') ||
+      !isNonNullable(this._mockData.getWorkflowOverviewResponse)
+    ) {
+      throw new Error(`[getWorkflowOverviewV2]: No mock data available`);
+    }
+
+    return Promise.resolve(this._mockData.getWorkflowOverviewResponseV2);
+  }
+
+  listWorkflowOverviewsV2(): Promise<
+    WorkflowOverviewListResultDTO | undefined
+  > {
+    if (
+      !hasOwnProp(this._mockData, 'listWorkflowOverviewsResponse') ||
+      !isNonNullable(this._mockData.listWorkflowOverviewsResponse)
+    ) {
+      throw new Error(`[listWorkflowOverviews]: No mock data available`);
+    }
+
+    return Promise.resolve(this._mockData.listWorkflowOverviewsResponseV2);
   }
 }

@@ -3,8 +3,12 @@ import { ResponseError } from '@backstage/errors';
 import { JsonObject } from '@backstage/types';
 
 import {
+  ApiError,
   AssessedProcessInstance,
+  AssessedProcessInstanceDTO,
+  DefaultService,
   ProcessInstance,
+  ProcessInstanceListResultDTO,
   QUERY_PARAM_ASSESSMENT_INSTANCE_ID,
   QUERY_PARAM_BUSINESS_KEY,
   QUERY_PARAM_INCLUDE_ASSESSMENT,
@@ -13,7 +17,9 @@ import {
   WorkflowExecutionResponse,
   WorkflowInputSchemaResponse,
   WorkflowOverview,
+  WorkflowOverviewDTO,
   WorkflowOverviewListResult,
+  WorkflowOverviewListResultDTO,
 } from '@janus-idp/backstage-plugin-orchestrator-common';
 
 import { buildUrl } from '../utils/UrlUtils';
@@ -85,9 +91,31 @@ export class OrchestratorClient implements OrchestratorApi {
     );
   }
 
+  async listWorkflowOverviewsV2(): Promise<WorkflowOverviewListResultDTO> {
+    try {
+      return await DefaultService.getWorkflowsOverview();
+    } catch (error) {
+      const e = error as ApiError & {
+        body?: { error?: { message?: string } };
+      };
+      throw new Error(e.body?.error?.message);
+    }
+  }
+
   async listInstances(): Promise<ProcessInstance[]> {
     const baseUrl = await this.getBaseUrl();
     return await this.fetcher(`${baseUrl}/instances`).then(r => r.json());
+  }
+
+  async listInstancesV2(): Promise<ProcessInstanceListResultDTO | undefined> {
+    try {
+      return await DefaultService.getInstances();
+    } catch (error) {
+      const e = error as ApiError & {
+        body?: { error?: { message?: string } };
+      };
+      throw new Error(e.body?.error?.message);
+    }
   }
 
   async getInstance(
@@ -102,6 +130,22 @@ export class OrchestratorClient implements OrchestratorApi {
     return await this.fetcher(urlToFetch).then(r => r.json());
   }
 
+  async getInstanceV2(
+    instanceId: string,
+    includeAssessment = false,
+  ): Promise<AssessedProcessInstanceDTO | undefined> {
+    try {
+      return await DefaultService.getInstanceById(
+        instanceId,
+        includeAssessment,
+      );
+    } catch (error) {
+      const e = error as ApiError & {
+        body?: { error?: { message?: string } };
+      };
+      throw new Error(e.body?.error?.message);
+    }
+  }
   async getWorkflowDataInputSchema(args: {
     workflowId: string;
     instanceId?: string;
@@ -121,6 +165,19 @@ export class OrchestratorClient implements OrchestratorApi {
     return await this.fetcher(
       `${baseUrl}/workflows/${workflowId}/overview`,
     ).then(r => r.json());
+  }
+
+  async getWorkflowOverviewV2(
+    workflowId: string,
+  ): Promise<WorkflowOverviewDTO> {
+    try {
+      return await DefaultService.getWorkflowOverviewById({ workflowId });
+    } catch (error) {
+      const e = error as ApiError & {
+        body?: { error?: { message?: string } };
+      };
+      throw new Error(e.body?.error?.message);
+    }
   }
 
   async retriggerInstanceInError(args: {
