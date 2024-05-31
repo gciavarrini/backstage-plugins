@@ -66,6 +66,10 @@ pageSize?: number
                 };
 GetInstanceById: {
                     /**
+ * Whether to include assessment
+ */
+includeAssessment?: boolean
+/**
  * ID of the workflow instance
  */
 instanceId: string
@@ -217,12 +221,16 @@ orderDirection,
 	public static getInstanceById(data: DefaultData['GetInstanceById']): CancelablePromise<AssessedProcessInstanceDTO> {
 		const {
 instanceId,
+includeAssessment = false,
 } = data;
 		return __request(OpenAPI, {
 			method: 'GET',
 			url: '/v2/workflows/instances/{instanceId}',
 			path: {
 				instanceId
+			},
+			query: {
+				includeAssessment
 			},
 			errors: {
 				500: `Error fetching instance`,
