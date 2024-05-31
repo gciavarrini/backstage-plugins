@@ -2,7 +2,7 @@ import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
 
-import type { ExecuteWorkflowRequestDTO,ExecuteWorkflowResponseDTO,ProcessInstanceDTO,ProcessInstanceListResultDTO,WorkflowDataDTO,WorkflowDTO,WorkflowOverviewDTO,WorkflowOverviewListResultDTO,WorkflowRunStatusDTO } from './models';
+import type { AssessedProcessInstanceDTO,ExecuteWorkflowRequestDTO,ExecuteWorkflowResponseDTO,ProcessInstanceListResultDTO,WorkflowDataDTO,WorkflowDTO,WorkflowOverviewDTO,WorkflowOverviewListResultDTO,WorkflowRunStatusDTO } from './models';
 
 export type DefaultData = {
         GetWorkflowsOverview: {
@@ -211,10 +211,10 @@ orderDirection,
 
 	/**
 	 * Get Workflow Instance by ID
-	 * @returns ProcessInstanceDTO Successful response
+	 * @returns AssessedProcessInstanceDTO Successful response
 	 * @throws ApiError
 	 */
-	public static getInstanceById(data: DefaultData['GetInstanceById']): CancelablePromise<ProcessInstanceDTO> {
+	public static getInstanceById(data: DefaultData['GetInstanceById']): CancelablePromise<AssessedProcessInstanceDTO> {
 		const {
 instanceId,
 } = data;

@@ -175,7 +175,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProcessInstanceDTO'
+                $ref: '#/components/schemas/AssessedProcessInstanceDTO'
         '500':
           description: Error fetching instance
           content:

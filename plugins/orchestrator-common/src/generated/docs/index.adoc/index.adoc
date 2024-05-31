@@ -256,7 +256,7 @@ Get Workflow Instance by ID
 
 ===== Return Type
 
-<<ProcessInstanceDTO>>
+<<AssessedProcessInstanceDTO>>
 
 
 ===== Content Type
@@ -273,7 +273,7 @@ Get Workflow Instance by ID
 
 | 200
 | Successful response
-|  <<ProcessInstanceDTO>>
+|  <<AssessedProcessInstanceDTO>>
 
 
 | 500
