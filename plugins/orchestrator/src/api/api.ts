@@ -49,10 +49,6 @@ export interface OrchestratorApi {
   listInstances(): Promise<ProcessInstance[]>;
 
   // v2 endpoints
-  getWorkflowOverviewV2(
-    workflowId: string,
-  ): Promise<WorkflowOverviewDTO | undefined>;
-
   listWorkflowOverviewsV2(): Promise<WorkflowOverviewListResultDTO | undefined>;
 }
 

@@ -1,7 +1,12 @@
 import { DiscoveryApi, IdentityApi } from '@backstage/core-plugin-api';
+import { ResponseError } from '@backstage/errors';
 import { JsonObject } from '@backstage/types';
 
-import { WorkflowExecutionResponse } from '@janus-idp/backstage-plugin-orchestrator-common';
+import {
+  DefaultApi,
+  WorkflowExecutionResponse,
+  WorkflowOverviewListResultDTO,
+} from '@janus-idp/backstage-plugin-orchestrator-common';
 
 import {
   OrchestratorClient,
@@ -13,15 +18,16 @@ describe('OrchestratorClient', () => {
   let mockIdentityApi: jest.Mocked<IdentityApi>;
   let orchestratorClientOptions: jest.Mocked<OrchestratorClientOptions>;
   let orchestratorClient: OrchestratorClient;
+
+  const requestMock = jest.spyOn(DefaultApi.prototype as any, 'request');
+
   const baseUrl = 'https://api.example.com';
   const mockToken = 'test-token';
   const defaultAuthHeaders = { Authorization: `Bearer ${mockToken}` };
 
-  const mockFetch = jest.fn();
-  (global as any).fetch = mockFetch; // Cast global to any to avoid TypeScript errors
-
   beforeEach(() => {
     jest.clearAllMocks();
+
     // Create a mock DiscoveryApi with a mocked implementation of getBaseUrl
     mockDiscoveryApi = {
       getBaseUrl: jest.fn().mockResolvedValue('https://api.example.com'),
@@ -44,6 +50,7 @@ describe('OrchestratorClient', () => {
     };
     orchestratorClient = new OrchestratorClient(orchestratorClientOptions);
   });
+
   describe('executeWorkflow', () => {
     it('should execute workflow with empty parameters', async () => {
       // Given
@@ -339,36 +346,50 @@ describe('OrchestratorClient', () => {
   describe('listWorkflowOverviewsV2', () => {
     it('should return workflow overviews when successful', async () => {
       // Given
-      const mockWorkflowOverviews = [
-        { id: 'workflow123', name: 'Workflow 1' },
-        { id: 'workflow456', name: 'Workflow 2' },
-      ];
+      const mockWorkflowOverviews: WorkflowOverviewListResultDTO = {
+        overviews: [
+          { workflowId: 'workflow123', name: 'Workflow 1' },
+          { workflowId: 'workflow456', name: 'Workflow 2' },
+        ],
+        paginationInfo: {},
+      };
 
-      // Mock fetch to simulate a successful response
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
-        ok: true,
-        json: jest.fn().mockResolvedValue(mockWorkflowOverviews),
+      requestMock.mockImplementationOnce(async () => {
+        const mockResponse = new Response(
+          JSON.stringify(mockWorkflowOverviews),
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          },
+        );
+        return mockResponse;
       });
-
       // When
       const result = await orchestratorClient.listWorkflowOverviewsV2();
 
       // Then
-      expect(fetch).toHaveBeenCalledWith(`/v2/workflows/overview`, {
-        headers: defaultAuthHeaders,
-      });
+      expect(requestMock).toHaveBeenCalledTimes(1);
+      expect(requestMock).toHaveBeenCalledWith(
+        {
+          path: `/v2/workflows/overview`,
+          method: 'GET',
+          headers: {},
+          query: {},
+        },
+        undefined,
+      );
+
       expect(result).toEqual(mockWorkflowOverviews);
     });
 
     it('should throw a ResponseError when listing workflow overviews fails', async () => {
       // Given
-
-      // Mock fetch to simulate a failed response
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
-        ok: false,
+      const response: Response = new Response('Response message', {
         status: 500,
         statusText: 'Internal Server Error',
       });
+      requestMock.mockRejectedValueOnce(ResponseError.fromResponse(response));
 
       // When
       const promise = orchestratorClient.listWorkflowOverviewsV2();

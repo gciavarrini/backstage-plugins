@@ -3,12 +3,12 @@ import { ResponseError } from '@backstage/errors';
 import { JsonObject } from '@backstage/types';
 
 import {
-  ApiError,
   AssessedProcessInstance,
-  AssessedProcessInstanceDTO,
-  DefaultService,
+  Configuration,
+  ConfigurationParameters,
+  DefaultApi,
+  GetWorkflowsOverviewRequest,
   ProcessInstance,
-  ProcessInstanceListResultDTO,
   QUERY_PARAM_ASSESSMENT_INSTANCE_ID,
   QUERY_PARAM_BUSINESS_KEY,
   QUERY_PARAM_INCLUDE_ASSESSMENT,
@@ -17,7 +17,6 @@ import {
   WorkflowExecutionResponse,
   WorkflowInputSchemaResponse,
   WorkflowOverview,
-  WorkflowOverviewDTO,
   WorkflowOverviewListResult,
   WorkflowOverviewListResultDTO,
 } from '@janus-idp/backstage-plugin-orchestrator-common';
@@ -91,14 +90,29 @@ export class OrchestratorClient implements OrchestratorApi {
     );
   }
 
-  async listWorkflowOverviewsV2(): Promise<WorkflowOverviewListResultDTO> {
+  async listWorkflowOverviewsV2(
+    page?: number,
+    pageSize?: number,
+    orderBy?: string,
+    orderDirection?: string,
+  ): Promise<WorkflowOverviewListResultDTO> {
+    const confParameter: ConfigurationParameters = {
+      basePath: await this.getBaseUrl(),
+    };
+    const configuration = new Configuration(confParameter);
+    const apiInstance = new DefaultApi(configuration);
+    const req: GetWorkflowsOverviewRequest = {
+      page,
+      pageSize,
+      orderBy,
+      orderDirection,
+    };
     try {
-      return await DefaultService.getWorkflowsOverview();
-    } catch (error) {
-      const e = error as ApiError & {
-        body?: { error?: { message?: string } };
-      };
-      throw new Error(e.body?.error?.message);
+      return await apiInstance.getWorkflowsOverview(req);
+    } catch (error: any) {
+      // eslint-disable-next-line no-console
+      console.log('ERROR CATCH: ', error);
+      throw new Error(error);
     }
   }
 
