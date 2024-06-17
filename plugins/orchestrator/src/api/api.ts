@@ -1,55 +1,55 @@
 import { createApiRef } from '@backstage/core-plugin-api';
 import { JsonObject } from '@backstage/types';
 
+import { AxiosResponse } from 'axios';
+
 import {
-  AssessedProcessInstance,
-  ProcessInstance,
-  WorkflowDefinition,
-  WorkflowExecutionResponse,
-  WorkflowInputSchemaResponse,
-  WorkflowOverview,
+  AssessedProcessInstanceDTO,
+  ExecuteWorkflowResponseDTO,
+  ProcessInstanceListResultDTO,
   WorkflowOverviewDTO,
-  WorkflowOverviewListResult,
   WorkflowOverviewListResultDTO,
 } from '@janus-idp/backstage-plugin-orchestrator-common';
 
 export interface OrchestratorApi {
-  abortWorkflowInstance(instanceId: string): Promise<void>;
+  abortWorkflowInstance(instanceId: string): Promise<AxiosResponse<string>>;
 
   executeWorkflow(args: {
     workflowId: string;
     parameters: JsonObject;
     businessKey?: string;
-  }): Promise<WorkflowExecutionResponse>;
+  }): Promise<AxiosResponse<ExecuteWorkflowResponseDTO>>;
 
   retriggerInstanceInError(args: {
     instanceId: string;
     inputData: JsonObject;
-  }): Promise<WorkflowExecutionResponse>;
+  }): Promise<AxiosResponse<ExecuteWorkflowResponseDTO>>;
 
-  getWorkflowDefinition(workflowId: string): Promise<WorkflowDefinition>;
+  // getWorkflowDefinition(workflowId: string): Promise<WorkflowDefinition>;
 
-  getWorkflowSource(workflowId: string): Promise<string>;
+  getWorkflowSource(workflowId: string): Promise<AxiosResponse<string>>;
 
   getInstance(
     instanceId: string,
     includeAssessment: boolean,
-  ): Promise<AssessedProcessInstance>;
+  ): Promise<AxiosResponse<AssessedProcessInstanceDTO>>;
 
-  getWorkflowDataInputSchema(args: {
-    workflowId: string;
-    instanceId?: string;
-    assessmentInstanceId?: string;
-  }): Promise<WorkflowInputSchemaResponse>;
+  // getWorkflowDataInputSchema(args: {
+  //   workflowId: string;
+  //   instanceId?: string;
+  //   assessmentInstanceId?: string;
+  // }): Promise<WorkflowInputSchemaResponse>;
 
-  getWorkflowOverview(workflowId: string): Promise<WorkflowOverview>;
+  getWorkflowOverview(
+    workflowId: string,
+  ): Promise<AxiosResponse<WorkflowOverviewDTO>>;
 
-  listWorkflowOverviews(): Promise<WorkflowOverviewListResult>;
-
-  listInstances(): Promise<ProcessInstance[]>;
+  listInstances(): Promise<AxiosResponse<ProcessInstanceListResultDTO>>;
 
   // v2 endpoints
-  listWorkflowOverviewsV2(): Promise<WorkflowOverviewListResultDTO | undefined>;
+  listWorkflowOverviews(): Promise<
+    AxiosResponse<WorkflowOverviewListResultDTO, any>
+  >;
 }
 
 export const orchestratorApiRef = createApiRef<OrchestratorApi>({
