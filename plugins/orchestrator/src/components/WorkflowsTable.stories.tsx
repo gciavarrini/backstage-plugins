@@ -4,7 +4,10 @@ import { TestApiProvider, wrapInTestApp } from '@backstage/test-utils';
 
 import { Meta, StoryObj } from '@storybook/react';
 
-import { WorkflowOverview } from '@janus-idp/backstage-plugin-orchestrator-common';
+import {
+  WorkflowOverview,
+  WorkflowOverviewListResultDTO,
+} from '@janus-idp/backstage-plugin-orchestrator-common';
 
 import { fakeWorkflowOverviewList } from '../__fixtures__/fakeWorkflowOverviewList';
 import { orchestratorApiRef } from '../api';
@@ -24,10 +27,12 @@ const meta = {
               orchestratorApiRef,
               new MockOrchestratorClient({
                 listWorkflowOverviewsResponse: Promise.resolve({
-                  limit: 0,
-                  offset: 0,
-                  totalCount: 1,
-                  items: (context.args as { items: WorkflowOverview[] }).items,
+                  data: {
+                    overviews: (
+                      context.args as { items: WorkflowOverviewListResultDTO }
+                    ).items,
+                    paginationInfo: { limit: 0, offset: 0, totalCount: 1 },
+                  },
                 }),
               }),
             ],

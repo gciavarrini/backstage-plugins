@@ -1,30 +1,26 @@
 import moment from 'moment';
 
 import {
-  ProcessInstance,
-  ProcessInstanceState,
+  ProcessInstanceDTO,
+  ProcessInstanceStatusDTO,
   WorkflowCategory,
+  WorkflowCategoryDTO,
 } from '@janus-idp/backstage-plugin-orchestrator-common';
 
 import { fakeWorkflowOverviewList } from './fakeWorkflowOverviewList';
 
 let id = 10;
 const baseDate = '2023-11-16T10:50:34.346Z';
-export const fakeProcessInstance1: ProcessInstance = {
+export const fakeProcessInstance1: ProcessInstanceDTO = {
   id: `12f767c1-9002-43af-9515-62a72d0eaf${id++}`,
-  processName: fakeWorkflowOverviewList[0].name,
-  processId: fakeWorkflowOverviewList[0].workflowId,
-  state: ProcessInstanceState.Error,
+  name: fakeWorkflowOverviewList[0].name,
+  workflow: fakeWorkflowOverviewList[0].workflowId,
+  status: ProcessInstanceStatusDTO.Error,
   start: baseDate,
   end: moment(baseDate).add(13, 'hours').toISOString(),
-  nodes: [],
-  endpoint: 'enpoint/foo',
-  serviceUrl: 'service/bar',
-  source: 'my-source',
-  category: WorkflowCategory.INFRASTRUCTURE,
+  category: WorkflowCategoryDTO.Infrastructure,
   description: 'test description 1',
-  variables: {
-    foo: 'bar',
+  workflowdata: {
     workflowdata: {
       workflowOptions: {
         'my-category': {
@@ -46,49 +42,34 @@ export const fakeProcessInstance1: ProcessInstance = {
   },
 };
 
-export const fakeCompletedInstance: ProcessInstance = {
+export const fakeCompletedInstance: ProcessInstanceDTO = {
   id: `12f767c1-9002-43af-9515-62a72d0eaf${id++}`,
-  processName: fakeWorkflowOverviewList[1].name,
-  processId: fakeWorkflowOverviewList[1].workflowId,
-  state: ProcessInstanceState.Completed,
+  name: fakeWorkflowOverviewList[1].name,
+  workflow: fakeWorkflowOverviewList[1].workflowId,
+  status: ProcessInstanceStatusDTO.Completed,
   start: moment(baseDate).add(1, 'hour').toISOString(),
   end: moment(baseDate).add(1, 'day').toISOString(),
-  nodes: [],
-  variables: {},
-  endpoint: 'enpoint/foo',
-  serviceUrl: 'service/bar',
-  source: 'my-source',
-  category: WorkflowCategory.ASSESSMENT,
+  category: WorkflowCategoryDTO.Assessment,
   description: 'test description 2',
 };
 
-export const fakeActiveInstance: ProcessInstance = {
+export const fakeActiveInstance: ProcessInstanceDTO = {
   id: `12f767c1-9002-43af-9515-62a72d0eaf${id++}`,
-  processName: fakeWorkflowOverviewList[2].name,
-  processId: fakeWorkflowOverviewList[2].workflowId,
-  state: ProcessInstanceState.Active,
+  name: fakeWorkflowOverviewList[2].name,
+  workflow: fakeWorkflowOverviewList[2].workflowId,
+  status: ProcessInstanceStatusDTO.Running,
   start: moment(baseDate).add(2, 'hours').toISOString(),
-  nodes: [],
-  variables: {},
-  endpoint: 'enpoint/foo',
-  serviceUrl: 'service/bar',
-  source: 'my-source',
-  category: WorkflowCategory.INFRASTRUCTURE,
+  category: WorkflowCategoryDTO.Infrastructure,
   description: 'test description 3',
 };
 
-export const fakeProcessInstance4: ProcessInstance = {
+export const fakeProcessInstance4: ProcessInstanceDTO = {
   id: `12f767c1-9002-43af-9515-62a72d0eaf${id++}`,
-  processName: fakeWorkflowOverviewList[3].name,
-  processId: fakeWorkflowOverviewList[3].workflowId,
-  state: ProcessInstanceState.Suspended,
+  name: fakeWorkflowOverviewList[3].name,
+  workflow: fakeWorkflowOverviewList[3].workflowId,
+  status: ProcessInstanceStatusDTO.Suspended,
   start: baseDate,
-  nodes: [],
-  variables: {},
-  endpoint: 'enpoint/foo',
-  serviceUrl: 'service/bar',
-  source: 'my-source',
-  category: WorkflowCategory.INFRASTRUCTURE,
+  category: WorkflowCategoryDTO.Infrastructure,
   description: 'test description 4',
 };
 
