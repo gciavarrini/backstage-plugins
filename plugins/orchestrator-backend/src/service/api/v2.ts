@@ -3,7 +3,6 @@ import { ParsedRequest } from 'openapi-backend';
 import {
   AssessedProcessInstance,
   AssessedProcessInstanceDTO,
-  ExecuteWorkflowRequestDTO,
   ExecuteWorkflowResponseDTO,
   ProcessInstanceListResultDTO,
   ProcessInstanceState,
@@ -115,7 +114,7 @@ export class V2 {
   }
 
   public async executeWorkflow(
-    executeWorkflowRequestDTO: ExecuteWorkflowRequestDTO,
+    executeWorkflowRequestDTO: any,
     workflowId: string,
     businessKey: string | undefined,
   ): Promise<ExecuteWorkflowResponseDTO> {
