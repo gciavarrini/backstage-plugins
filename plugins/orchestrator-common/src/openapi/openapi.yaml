@@ -189,6 +189,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /v2/workflows/instances/{instanceId}/retrigger:
+    post:
+      summary: Retrigger instance in error
+      operationId: retriggerInstanceById
+      parameters:
+        - name: instanceId
+          in: path
+          required: true
+          description: ID of the workflow instance
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RetriggerInstanceRequestDTO'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExecuteWorkflowResponseDTO'
+        '500':
+          description: Error retriggering instance in error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /v2/workflows/instances/{instanceId}/results:
     get:
       summary: Get workflow results
@@ -244,6 +274,12 @@ paths:
           required: true
           schema:
             type: string
+        - name: businessKey
+          in: query
+          description: BusinessKey
+          required: false
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -289,6 +325,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 components:
+  securitySchemes:
+    bearerAuth: # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
   schemas:
     ErrorResponse:
       description:
@@ -449,6 +489,13 @@ components:
           type: string
         workflowdata:
           $ref: '#/components/schemas/WorkflowDataDTO'
+    RetriggerInstanceRequestDTO:
+      inputData:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: any
     WorkflowDataDTO:
       type: object
       properties:
@@ -486,14 +533,12 @@ components:
         value:
           type: string
     ExecuteWorkflowRequestDTO:
-      type: object
-      properties:
-        inputData:
-          type: object
-          additionalProperties:
-            type: string
-      required:
-        - inputData
+      inputData:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: any
     ExecuteWorkflowResponseDTO:
       type: object
       properties:
@@ -549,3 +594,5 @@ components:
         message:
           type: string
           description: Error message (optional)
+security:
+  - bearerAuth: []

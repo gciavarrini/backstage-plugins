@@ -20,6 +20,14 @@ API to interact with orchestrator plugin
 // markup not found, no include::{specDir}intro.adoc[opts=optional]
 
 
+== Access
+
+
+* *Bearer* Authentication 
+
+
+
+
 
 == Endpoints
 
@@ -155,8 +163,8 @@ Execute a workflow
 |===
 |Name| Description| Required| Default| Pattern
 
-| ExecuteWorkflowRequestDTO
-|  <<ExecuteWorkflowRequestDTO>>
+| body
+|  <<AnyType>>
 | X
 | 
 | 
@@ -165,6 +173,19 @@ Execute a workflow
 
 
 
+====== Query Parameters
+
+[cols="2,3,1,1,1"]
+|===
+|Name| Description| Required| Default| Pattern
+
+| businessKey
+| BusinessKey 
+| -
+| null
+| 
+
+|===
 
 
 ===== Return Type
@@ -951,6 +972,106 @@ ifdef::internal-generation[]
 endif::internal-generation[]
 
 
+[.retriggerInstanceById]
+==== retriggerInstanceById
+
+`POST /v2/workflows/instances/{instanceId}/retrigger`
+
+Retrigger instance in error
+
+===== Description
+
+
+
+
+// markup not found, no include::{specDir}v2/workflows/instances/\{instanceId\}/retrigger/POST/spec.adoc[opts=optional]
+
+
+
+===== Parameters
+
+====== Path Parameters
+
+[cols="2,3,1,1,1"]
+|===
+|Name| Description| Required| Default| Pattern
+
+| instanceId
+| ID of the workflow instance 
+| X
+| null
+| 
+
+|===
+
+====== Body Parameter
+
+[cols="2,3,1,1,1"]
+|===
+|Name| Description| Required| Default| Pattern
+
+| body
+|  <<AnyType>>
+| X
+| 
+| 
+
+|===
+
+
+
+
+
+===== Return Type
+
+<<ExecuteWorkflowResponseDTO>>
+
+
+===== Content Type
+
+* application/json
+
+===== Responses
+
+.HTTP Response Codes
+[cols="2,3,1"]
+|===
+| Code | Message | Datatype
+
+
+| 200
+| Successful response
+|  <<ExecuteWorkflowResponseDTO>>
+
+
+| 500
+| Error retriggering instance in error
+|  <<ErrorResponse>>
+
+|===
+
+===== Samples
+
+
+// markup not found, no include::{snippetDir}v2/workflows/instances/\{instanceId\}/retrigger/POST/http-request.adoc[opts=optional]
+
+
+// markup not found, no include::{snippetDir}v2/workflows/instances/\{instanceId\}/retrigger/POST/http-response.adoc[opts=optional]
+
+
+
+// file not found, no * wiremock data link :v2/workflows/instances/{instanceId}/retrigger/POST/POST.json[]
+
+
+ifdef::internal-generation[]
+===== Implementation
+
+// markup not found, no include::{specDir}v2/workflows/instances/\{instanceId\}/retrigger/POST/implementation.adoc[opts=optional]
+
+
+endif::internal-generation[]
+
+
 [#models]
 == Models
 
@@ -1000,25 +1121,6 @@ The ErrorResponse object represents a common structure for handling errors in AP
 | 
 | String 
 | An optional field that can contain additional information or context about the error. It provides flexibility for including extra details based on specific error scenarios.
-|  
-
-|===
-
-
-[#ExecuteWorkflowRequestDTO]
-=== _ExecuteWorkflowRequestDTO_ 
-
-
-
-[.fields-ExecuteWorkflowRequestDTO]
-[cols="2,1,2,4,1"]
-|===
-| Field Name| Required| Type| Description| Format
-
-| inputData
-| X
-| Map  of <<string>>
-| 
 |  
 
 |===
